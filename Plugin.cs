@@ -1,10 +1,8 @@
 using System.IO;
 using COTL_API.CustomInventory;
 using COTL_API.CustomFollowerCommand;
-using CotLTemplateMod.Items;
-using CotLTemplateMod.CustomFollowerCommands;
-using static InventoryItem;
-    
+using COTL_API.Skins;
+
 namespace CotLTemplateMod
 {
     [BepInPlugin(PluginGuid, PluginName, PluginVer)]
@@ -12,8 +10,8 @@ namespace CotLTemplateMod
     [HarmonyPatch]
     public class Plugin : BaseUnityPlugin
     {
-        public const string PluginGuid = "IngoH.cotl.CotLTemplateMod";
-        public const string PluginName = "CotLTemplateMod";
+        public const string PluginGuid = "xyz.zelzmiy.UnlockAllFollowerForms";
+        public const string PluginName = "UnlockAllFOllowerForms";
         public const string PluginVer = "1.0.0";
 
         internal static ManualLogSource Log;
@@ -21,23 +19,15 @@ namespace CotLTemplateMod
 
         internal static string PluginPath;
 
-        internal static ITEM_TYPE ExampleItem;
-
-        internal static FollowerCommands FollowerCommand;
-
         private void Awake()
         {
             Log = Logger;
             PluginPath = Path.GetDirectoryName(Info.Location);
-
-            ExampleItem = CustomItemManager.Add(new ExampleItem());
-            FollowerCommand = CustomFollowerCommandManager.Add(new ExampleFollowerCommand());
         }
 
         private void OnEnable()
         {
             Harmony.PatchAll();
-            LogInfo($"Loaded {PluginName}!");
         }
 
         private void OnDisable()
@@ -45,5 +35,13 @@ namespace CotLTemplateMod
             Harmony.UnpatchSelf();
             LogInfo($"Unloaded {PluginName}!");
         }
+
+        [HarmonyPatch(typeof(DataManager), nameof(DataManager.GetFollowerSkinUnlocked)), HarmonyPrefix]
+        public static bool UnlockAllSkins(ref bool __result)
+        {
+            __result = true;
+            return false;
+        }
+
     }
 }
